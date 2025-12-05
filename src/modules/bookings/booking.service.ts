@@ -30,7 +30,7 @@ const createBooking = async (
   const { customer_id, vehicle_id, rent_start_date, rent_end_date } = payload;
 
   const vehicleResult = await pool.query(
-    `SELECT vehicle_name, daily_rent_price FROM vehicles WHERE id = $1`,
+    `SELECT vehicle_name, daily_rent_price, availability_status FROM vehicles WHERE id = $1`,
     [vehicle_id]
   );
 
@@ -38,7 +38,12 @@ const createBooking = async (
     throw new Error("Vehicle not found");
   }
 
-  const { vehicle_name, daily_rent_price } = vehicleResult.rows[0];
+  const { vehicle_name, daily_rent_price, availability_status } =
+    vehicleResult.rows[0];
+
+  if (availability_status === "booked") {
+    throw new Error("Vehicle is already booked");
+  }
 
   const total_price = calculatePrice(
     rent_start_date,

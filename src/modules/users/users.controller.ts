@@ -1,6 +1,8 @@
 import { Request, Response } from "express";
 import { userService } from "./user.service";
 import { TUserUpdate, TUserResponse } from "./user.types";
+import { sendError, sendResponse } from "../../helper/responseHandler";
+import { HttpStatusCode } from "../../types/httpStatusCodes";
 
 export const getAllUsers = async (req: Request, res: Response) => {
   try {
@@ -13,52 +15,74 @@ export const getAllUsers = async (req: Request, res: Response) => {
       phone: user.phone,
       role: user.role,
     }));
-    res.status(200).json({
-      success: true,
-      message: "Users retrieved successfully",
-      data: users,
-    });
+    return sendResponse(
+      res,
+      HttpStatusCode.OK,
+      "Users retrieved successfully",
+      users
+    );
   } catch (error: any) {
-    res.status(500).json({
-      success: false,
-      message: "Something went wrong",
-      errors: error.message || error,
-    });
+    return sendError(
+      res,
+      HttpStatusCode.INTERNAL_SERVER_ERROR,
+      "Something went wrong",
+      error.message || error
+    );
   }
 };
 
 export const updateUser = async (req: Request, res: Response) => {
   try {
+    const user = req.user!;
     const { userId } = req.params;
     const payload: TUserUpdate = req.body;
 
-    const result = await userService.updateUser(userId as string, payload);
+    const result = await userService.updateUser(
+      user.id,
+      user.role,
+      userId as string,
+      payload
+    );
 
     if (!result) {
-      return res.status(404).json({
-        success: false,
-        message: "Not Found",
-        errors: "User not found",
-      });
+      return sendError(
+        res,
+        HttpStatusCode.NOT_FOUND,
+        "Not Found",
+        "User not found"
+      );
     }
 
-    res.status(200).json({
-      success: true,
-      message: "User updated successfully",
-      data: {
-        id: result.id,
-        name: result.name,
-        email: result.email,
-        phone: result.phone,
-        role: result.role,
-      },
+    return sendResponse(res, HttpStatusCode.OK, "User updated successfully", {
+      id: result.id,
+      name: result.name,
+      email: result.email,
+      phone: result.phone,
+      role: result.role,
     });
   } catch (error: any) {
-    res.status(500).json({
-      success: false,
-      message: "Something went wrong",
-      errors: error.message || error,
-    });
+    if (error.message === "Unauthorized") {
+      return sendError(
+        res,
+        HttpStatusCode.FORBIDDEN,
+        "Forbidden",
+        "user can only update his own profile"
+      );
+    }
+    if (error.message === "Only admins can update user roles") {
+      return sendError(
+        res,
+        HttpStatusCode.FORBIDDEN,
+        "Forbidden",
+        error.message
+      );
+    }
+    return sendError(
+      res,
+      HttpStatusCode.INTERNAL_SERVER_ERROR,
+      "Something went wrong",
+      error.message || error
+    );
   }
 };
 
@@ -67,28 +91,28 @@ export const deleteUser = async (req: Request, res: Response) => {
     const { userId } = req.params;
     const result = await userService.deleteUser(userId as string);
     if (!result) {
-      return res.status(404).json({
-        success: false,
-        message: "Not Found",
-        errors: "User not found",
-      });
+      return sendError(
+        res,
+        HttpStatusCode.NOT_FOUND,
+        "Not Found",
+        "User not found"
+      );
     }
-    res.status(200).json({
-      success: true,
-      message: "User deleted successfully",
-    });
+    return sendResponse(res, HttpStatusCode.OK, "User deleted successfully");
   } catch (error: any) {
     if (error.message === "User has active bookings") {
-      return res.status(400).json({
-        success: false,
-        message: "Bad Request",
-        errors: error.message,
-      });
+      return sendError(
+        res,
+        HttpStatusCode.BAD_REQUEST,
+        "Bad Request",
+        error.message
+      );
     }
-    res.status(500).json({
-      success: false,
-      message: "Something went wrong",
-      errors: error.message || error,
-    });
+    return sendError(
+      res,
+      HttpStatusCode.INTERNAL_SERVER_ERROR,
+      "Something went wrong",
+      error.message || error
+    );
   }
 };

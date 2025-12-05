@@ -10,14 +10,8 @@ const router = express.Router();
 
 router.get("/", auth("admin", "customer"), getAllBookings);
 
-router.post("/", createBooking);
+router.post("/", auth("admin", "customer"), createBooking);
 
 router.put("/:bookingId", auth("admin", "customer"), updateBooking);
-
-// router.get("/:vehicleId", getVehiclesById);
-
-// router.put("/:vehicleId", updateVehicle);
-
-// router.delete("/:vehicleId", deleteVehicle);
 
 export const bookingRoutes = router;

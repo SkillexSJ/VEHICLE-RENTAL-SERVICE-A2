@@ -4,8 +4,8 @@ import auth from "../../middlewares/auth";
 
 const router = express.Router();
 
-router.get("/", getAllUsers);
-router.put("/:userId", updateUser);
-router.delete("/:userId", deleteUser);
+router.get("/", auth("admin"), getAllUsers);
+router.put("/:userId", auth("admin", "customer"), updateUser);
+router.delete("/:userId", auth("admin"), deleteUser);
 
 export const userRoutes = router;

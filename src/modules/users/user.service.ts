@@ -7,13 +7,24 @@ const getAllUsers = async (): Promise<TUserResponse[]> => {
 };
 
 const updateUser = async (
-  userId: string,
+  currentUserId: number,
+  currentUserRole: string,
+  targetUserId: string,
   payload: TUserUpdate
 ): Promise<TUserResponse | null> => {
-  const user = await pool.query(`SELECT * FROM users WHERE id = $1`, [userId]);
+  const user = await pool.query(`SELECT * FROM users WHERE id = $1`, [
+    targetUserId,
+  ]);
 
   if (user.rowCount === 0) {
     return null;
+  }
+
+  if (
+    currentUserRole === "customer" &&
+    currentUserId.toString() !== targetUserId
+  ) {
+    throw new Error("Unauthorized");
   }
 
   const oldUser = user.rows[0];
@@ -23,11 +34,18 @@ const updateUser = async (
   const password =
     payload.password !== undefined ? payload.password : oldUser.password;
   const phone = payload.phone !== undefined ? payload.phone : oldUser.phone;
-  const role = payload.role !== undefined ? payload.role : oldUser.role;
+
+  let role = oldUser.role;
+  if (payload.role !== undefined) {
+    if (currentUserRole !== "admin") {
+      throw new Error("Only admins can update user roles");
+    }
+    role = payload.role;
+  }
 
   const result = await pool.query(
     `UPDATE users SET name = $1, email = $2, password = $3, phone = $4, role = $5 WHERE id = $6 RETURNING *`,
-    [name, email, password, phone, role, userId]
+    [name, email, password, phone, role, targetUserId]
   );
 
   return result.rows[0];
