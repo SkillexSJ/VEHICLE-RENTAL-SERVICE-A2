@@ -186,9 +186,10 @@ const updateBooking = async (
     }
 
     if (userRole === "customer") {
-      const today = new Date();
-      const startDate = new Date(booking.rent_start_date);
-      if (startDate <= today) {
+      const today: string = formatDate(new Date());
+      const startDate: string = formatDate(new Date(booking.rent_start_date));
+
+      if (today >= startDate) {
         throw new Error("Cannot cancel booking after start date");
       }
     }
