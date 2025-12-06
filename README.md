@@ -73,7 +73,7 @@ The application will automatically create the required tables on startup. The da
 
 ### 5. Run the Application
 
-**Development Mode** (with hot reload):
+**Development Mode**:
 
 ```bash
 npm run dev
