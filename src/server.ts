@@ -18,7 +18,7 @@ app.use("/api/v1/users", userRoutes);
 app.use("/api/v1/bookings", bookingRoutes);
 
 app.get("/", (req: Request, res: Response) => {
-  res.send("WELCOME TO CAR RENTAL SERVICE");
+  res.send("WELCOME TO VEHICLE RENTAL SERVICE");
 });
 
 app.listen(config.port, () => {
