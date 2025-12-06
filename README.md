@@ -10,7 +10,7 @@ A robust and scalable RESTful API for managing vehicle rentals, built with Node.
 
 ## ✨ Features
 
-- **Authentication:** JWT-based user registration & login with role-based access (Admin/Customer)
+- **Authentication:** JWT-based user registration & signin with role-based access (Admin/Customer)
 - **Vehicle Management:** Full CRUD operations with real-time availability tracking and auto-status updates
 - **Booking System:** Automatic price calculation, role-based views, auto-return for expired bookings, double-booking prevention
 - **User Management:** Admin manages all users, customers manage own profiles only
@@ -96,7 +96,7 @@ http://localhost:3000/api/v1
 | Method | Endpoint       | Access | Description       |
 | ------ | -------------- | ------ | ----------------- |
 | POST   | `/auth/signup` | Public | Register new user |
-| POST   | `/auth/login`  | Public | User login        |
+| POST   | `/auth/signin` | Public | User signin       |
 
 ### Vehicles
 
