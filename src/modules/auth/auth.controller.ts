@@ -105,11 +105,13 @@ export const login = async (req: Request, res: Response) => {
 
     return sendResponse(res, HttpStatusCode.OK, "Login successful", {
       token: result.token,
-      id: result.id,
-      name: result.name,
-      email: result.email,
-      phone: result.phone,
-      role: result.role,
+      user: {
+        id: result.id,
+        name: result.name,
+        email: result.email,
+        phone: result.phone,
+        role: result.role,
+      },
     });
   } catch (error: any) {
     return sendError(
