@@ -4,7 +4,7 @@ A robust and scalable RESTful API for managing vehicle rentals, built with Node.
 
 ## 🌐 Live URL
 
-[https://your-deployment-url.com](https://your-deployment-url.com) _(Update with actual deployment URL)_
+**[API LIVE LINK](https://vehicle-rental-service-a2.vercel.app)**
 
 ---
 
