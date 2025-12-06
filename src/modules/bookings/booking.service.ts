@@ -185,6 +185,14 @@ const updateBooking = async (
       throw new Error("Only active bookings can be cancelled");
     }
 
+    if (userRole === "customer") {
+      const today = new Date();
+      const startDate = new Date(booking.rent_start_date);
+      if (startDate <= today) {
+        throw new Error("Cannot cancel booking after start date");
+      }
+    }
+
     const result = await pool.query(
       `UPDATE bookings SET status = $1 WHERE id = $2 RETURNING *`,
       ["cancelled", bookingId]

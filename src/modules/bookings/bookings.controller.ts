@@ -126,7 +126,8 @@ export const updateBooking = async (req: Request, res: Response) => {
       error.message === "Only active bookings can be cancelled" ||
       error.message === "Invalid status. Use 'cancelled' or 'returned'" ||
       error.message === "Only admins can mark bookings as returned" ||
-      error.message === "Only active bookings can be marked as returned"
+      error.message === "Only active bookings can be marked as returned" ||
+      error.message === "Cannot cancel booking after start date"
     ) {
       return sendError(
         res,
