@@ -21,7 +21,7 @@ A robust and scalable RESTful API for managing vehicle rentals, built with Node.
 ## 🛠️ Technology Stack
 
 - **Runtime:** Node.js
-- **Framework:** Express.js (v5.2.1) + TypeScript (v5.9.3)
+- **Framework:** Express.js
 - **Database:** PostgreSQL with NEONDB
 - **Authentication:** JWT (jsonwebtoken) + bcryptjs
 - **Development:** tsx, dotenv
